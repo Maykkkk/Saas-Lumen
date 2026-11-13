@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#060818" />
+  <title>Lumen – The shared inbox for support teams</title>
+  <meta name="description" content="Lumen brings every customer conversation into one shared inbox so your support team can reply faster and never drop a ticket." />
+
+  <!-- Optional web font (falls back to the system font if offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <!-- Reusable SVG icons -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+      <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+      <symbol id="i-at" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- Animated background -->
+  <div class="aurora" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="grid-bg"></span>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ NAVIGATION ============ -->
+  <header class="site-header" id="top">
+    <nav class="nav glass" aria-label="Main navigation">
+      <a href="#top" class="brand" aria-label="Lumen home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></g></svg>
+        </span>
+        Lumen
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="btn btn-primary nav-cta" type="button" data-open-signup>Get started</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <a class="pill reveal" href="#features">
+            <span class="pulse"></span> New · AI-suggested replies
+            <svg class="icon icon-sm"><use href="#i-arrow"/></svg>
+          </a>
+          <h1 id="hero-title" class="reveal">Every customer conversation, <span class="grad-text">one calm inbox.</span></h1>
+          <p class="lead reveal">Lumen pulls email, chat and social messages into a single shared inbox, so your team replies faster, never drops a ticket and always knows who owns what.</p>
+          <div class="hero-actions reveal">
+            <button class="btn btn-primary btn-lg" type="button" data-open-signup>Start free <svg class="icon icon-sm"><use href="#i-arrow"/></svg></button>
+            <a class="btn btn-glass btn-lg" href="#contact">Book a demo</a>
+          </div>
+          <div class="hero-proof reveal">
+            <div class="avatars" aria-hidden="true">
+              <span class="avatar a1">PS</span><span class="avatar a2">AK</span><span class="avatar a3">MR</span><span class="avatar a4">JD</span>
+            </div>
+            <p>
+              <span class="stars" aria-label="Rated 4.9 out of 5">
+                <svg class="icon icon-sm"><use href="#i-star"/></svg><svg class="icon icon-sm"><use href="#i-star"/></svg><svg class="icon icon-sm"><use href="#i-star"/></svg><svg class="icon icon-sm"><use href="#i-star"/></svg><svg class="icon icon-sm"><use href="#i-star"/></svg>
+              </span>
+              <strong>4.9/5</strong> from 2,500+ support teams
+            </p>
+          </div>
+        </div>
+
+        <!-- Product mockup (decorative) -->
+        <div class="hero-visual reveal" id="tilt" aria-hidden="true">
+          <div class="mock glass">
+            <div class="mock-bar">
+              <i></i><i></i><i></i>
+              <span>Lumen · Support inbox</span>
+              <em class="live"><b></b>Live</em>
+            </div>
+            <div class="mock-body">
+              <div class="mock-list" id="feed">
+                <div class="mock-msg selected">
+                  <span class="avatar a1">PS</span>
+                  <div><strong>Priya Sharma</strong><small>Order hasn't arrived yet…</small></div>
+                  <em>now</em>
+                </div>
+                <div class="mock-msg">
+                  <span class="avatar a2">AK</span>
+                  <div><strong>Arjun Kapoor</strong><small>Can I change my plan?</small></div>
+                  <em>9m</em>
+                </div>
+                <div class="mock-msg">
+                  <span class="avatar a3">MR</span>
+                  <div><strong>Meera Rao</strong><small>Thanks, that fixed it!</small></div>
+                  <em>1h</em>
+                </div>
+                <div class="mock-msg">
+                  <span class="avatar a4">JD</span>
+                  <div><strong>John Dsouza</strong><small>Invoice request for March</small></div>
+                  <em>3h</em>
+                </div>
+              </div>
+
+              <div class="mock-thread">
+                <div class="thread-head">
+                  <span class="avatar a1">PS</span>
+                  <div><strong>Priya Sharma</strong><small>via Email · Order #4821</small></div>
+                  <span class="tag">Urgent</span>
+                </div>
+                <div class="bubble in">Hi! My order hasn't arrived yet. Can you check?</div>
+                <div class="bubble out">Hi Priya, checking with the courier now. One moment!</div>
+                <div class="typing"><i></i><i></i><i></i></div>
+                <div class="thread-reply"><span>Write a reply…</span><b class="ai-chip">✦ AI suggest</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chip chip-1 glass"><svg class="icon icon-sm"><use href="#i-check"/></svg> Ticket assigned to Riya</div>
+          <div class="chip chip-2 glass">
+            <span>Avg. reply time</span>
+            <strong>4 min</strong>
+            <svg class="spark" viewBox="0 0 60 20"><polyline points="0,16 10,12 20,14 30,8 40,10 50,4 60,2" /></svg>
+          </div>
+          <div class="chip chip-3 glass"><span class="dot"></span> CSAT <strong>98%</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRUST STRIP ============ -->
+    <section class="trust" aria-label="Trusted by">
+      <p class="trust-label">Trusted by fast-moving support teams</p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <ul class="logos">
+            <li><i></i>Northwind</li><li><i></i>Brightly</li><li><i></i>Kestrel</li><li><i></i>Pinecone</li><li><i></i>Solstice</li><li><i></i>Vantage</li><li><i></i>Orbitly</li><li><i></i>Haven&amp;Co</li>
+          </ul>
+          <ul class="logos" aria-hidden="true">
+            <li><i></i>Northwind</li><li><i></i>Brightly</li><li><i></i>Kestrel</li><li><i></i>Pinecone</li><li><i></i>Solstice</li><li><i></i>Vantage</li><li><i></i>Orbitly</li><li><i></i>Haven&amp;Co</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS ============ -->
+    <section class="stats-wrap">
+      <div class="container">
+        <div class="stats glass reveal">
+          <div class="stat"><strong data-count="4" data-suffix=" min">0</strong><span>Average first reply</span></div>
+          <div class="stat"><strong data-count="38" data-suffix="%">0</strong><span>Faster resolution</span></div>
+          <div class="stat"><strong data-count="2500" data-suffix="+">0</strong><span>Teams worldwide</span></div>
+          <div class="stat"><strong data-count="99.9" data-suffix="%" data-decimals="1">0</strong><span>Uptime, last 12 months</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">Features</p>
+          <h2 id="features-title" class="reveal">Everything your team needs to <span class="grad-text">keep customers happy</span></h2>
+          <p class="section-sub reveal">Simple enough to learn in an afternoon, powerful enough to run support for growing teams.</p>
+        </header>
+
+        <div class="bento">
+          <article class="card glass spot reveal wide">
+            <span class="card-icon"><svg class="icon"><use href="#i-inbox"/></svg></span>
+            <h3>Unified inbox</h3>
+            <p>Email, live chat and social DMs land in one place. No more switching between five tabs.</p>
+            <div class="channels" aria-hidden="true">
+              <span>Email</span><span>Live chat</span><span>Instagram</span><span>WhatsApp</span><span>X / Twitter</span>
+            </div>
+          </article>
+          <article class="card glass spot reveal">
+            <span class="card-icon"><svg class="icon"><use href="#i-users"/></svg></span>
+            <h3>Smart assignment</h3>
+            <p>Route conversations to the right person by topic, language or workload.</p>
+          </article>
+          <article class="card glass spot reveal">
+            <span class="card-icon"><svg class="icon"><use href="#i-zap"/></svg></span>
+            <h3>Saved replies</h3>
+            <p>Answer common questions in one click with templates your whole team shares.</p>
+          </article>
+          <article class="card glass spot reveal wide">
+            <span class="card-icon"><svg class="icon"><use href="#i-chart"/></svg></span>
+            <h3>Live analytics</h3>
+            <p>Track response time, resolution rate and workload on a dashboard that updates in real time.</p>
+            <div class="bars" aria-hidden="true">
+              <i style="--h:35%"></i><i style="--h:55%"></i><i style="--h:42%"></i><i style="--h:70%"></i><i style="--h:60%"></i><i style="--h:85%"></i><i style="--h:74%"></i><i style="--h:96%"></i>
+            </div>
+          </article>
+          <article class="card glass spot reveal">
+            <span class="card-icon"><svg class="icon"><use href="#i-link"/></svg></span>
+            <h3>Integrations</h3>
+            <p>Connect Slack, Shopify, Stripe and 40+ tools so customer context is always at hand.</p>
+          </article>
+          <article class="card glass spot reveal">
+            <span class="card-icon"><svg class="icon"><use href="#i-at"/></svg></span>
+            <h3>Notes &amp; @mentions</h3>
+            <p>Loop in a teammate privately without leaving the conversation.</p>
+          </article>
+          <article class="card glass spot reveal">
+            <span class="card-icon"><svg class="icon"><use href="#i-shield"/></svg></span>
+            <h3>Secure by default</h3>
+            <p>Role-based access, audit logs and encrypted storage keep customer data safe.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section" id="how-it-works" aria-labelledby="how-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">How it works</p>
+          <h2 id="how-title" class="reveal">Up and running in <span class="grad-text">three steps</span></h2>
+          <p class="section-sub reveal">Lumen collects your customer messages in one shared inbox. Your team claims, answers and closes them together, and you see how it's going at a glance.</p>
+        </header>
+
+        <ol class="steps" id="steps">
+          <li class="step glass spot reveal">
+            <span class="step-num">1</span>
+            <h3>Connect your channels</h3>
+            <p>Link your support email, website chat and social accounts in a few clicks. No code needed.</p>
+          </li>
+          <li class="step glass spot reveal">
+            <span class="step-num">2</span>
+            <h3>Invite your team</h3>
+            <p>Add teammates, set up assignment rules and share saved replies so everyone answers consistently.</p>
+          </li>
+          <li class="step glass spot reveal">
+            <span class="step-num">3</span>
+            <h3>Reply and improve</h3>
+            <p>Resolve conversations faster, then use analytics to spot trends and coach your team.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow reveal">Pricing</p>
+          <h2 id="pricing-title" class="reveal">Simple plans that <span class="grad-text">grow with you</span></h2>
+          <p class="section-sub reveal">Start free. Upgrade when your team is ready. Cancel anytime.</p>
+
+          <div class="billing-toggle glass reveal">
+            <span id="lbl-monthly" class="is-active">Monthly</span>
+            <button type="button" class="switch" id="billing-switch" role="switch" aria-checked="false" aria-label="Bill yearly">
+              <span class="switch-knob"></span>
+            </button>
+            <span id="lbl-yearly">Yearly <small class="badge">Save 20%</small></span>
+          </div>
+        </header>
+
+        <div class="pricing-grid">
+          <article class="plan glass spot reveal">
+            <h3>Starter</h3>
+            <p class="plan-desc">For small teams just getting organised.</p>
+            <p class="price"><span class="amount" data-monthly="0" data-yearly="0">$0</span><span class="per">/ user / month</span></p>
+            <ul class="plan-list">
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Up to 3 teammates</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Email &amp; live chat</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> 30-day history</li>
+            </ul>
+            <button class="btn btn-glass btn-block" type="button" data-open-signup data-plan="Starter">Start for free</button>
+          </article>
+
+          <article class="plan plan-featured reveal">
+            <span class="plan-flag">Most popular</span>
+            <h3>Team</h3>
+            <p class="plan-desc">For growing support teams.</p>
+            <p class="price"><span class="amount" data-monthly="12" data-yearly="10">$12</span><span class="per">/ user / month</span></p>
+            <ul class="plan-list">
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Unlimited teammates</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Smart assignment &amp; saved replies</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Live analytics</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> 40+ integrations</li>
+            </ul>
+            <button class="btn btn-primary btn-block" type="button" data-open-signup data-plan="Team">Start 14-day trial</button>
+          </article>
+
+          <article class="plan glass spot reveal">
+            <h3>Business</h3>
+            <p class="plan-desc">For larger teams with advanced needs.</p>
+            <p class="price"><span class="amount" data-monthly="29" data-yearly="24">$29</span><span class="per">/ user / month</span></p>
+            <ul class="plan-list">
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Everything in Team</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Roles, audit logs &amp; SSO</li>
+              <li><svg class="icon icon-sm"><use href="#i-check"/></svg> Priority support</li>
+            </ul>
+            <a class="btn btn-glass btn-block" href="#contact">Talk to sales</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT / DEMO ============ -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div class="contact-info">
+          <p class="eyebrow reveal">Contact</p>
+          <h2 id="contact-title" class="reveal">See Lumen <span class="grad-text">in action</span></h2>
+          <p class="section-sub left reveal">Book a 20-minute demo and we'll show you how Lumen fits your support workflow. Prefer to talk first? Reach us directly.</p>
+
+          <ul class="contact-list reveal">
+            <li><svg class="icon"><use href="#i-mail"/></svg><span>guptamayank1206@gmail.com</span></li>
+            <li><svg class="icon"><use href="#i-phone"/></svg><span>+91 9784281831</span></li>
+            <li><svg class="icon"><use href="#i-pin"/></svg><span>Hiranandani Estate, Thane, India</span></li>
+          </ul>
+        </div>
+
+        <div class="form-card glass reveal">
+          <form id="demo-form" novalidate>
+            <h3>Request a demo</h3>
+
+            <div class="field">
+              <label for="demo-name">Full name</label>
+              <input id="demo-name" name="name" type="text" autocomplete="name" placeholder="Jane Doe" data-rules="required|min:2" aria-describedby="demo-name-err" />
+              <p class="error" id="demo-name-err" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="demo-email">Work email</label>
+              <input id="demo-email" name="email" type="email" autocomplete="email" placeholder="jane@company.com" data-rules="required|email" aria-describedby="demo-email-err" />
+              <p class="error" id="demo-email-err" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="demo-size">Team size</label>
+              <select id="demo-size" name="size" data-rules="required" aria-describedby="demo-size-err">
+                <option value="">Select…</option>
+                <option>1–5 people</option>
+                <option>6–20 people</option>
+                <option>21–100 people</option>
+                <option>100+ people</option>
+              </select>
+              <p class="error" id="demo-size-err" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="demo-msg">What would you like to see?</label>
+              <textarea id="demo-msg" name="message" rows="4" placeholder="Tell us a bit about your support setup…" data-rules="required|min:10" aria-describedby="demo-msg-err"></textarea>
+              <p class="error" id="demo-msg-err" role="alert"></p>
+            </div>
+
+            <button class="btn btn-primary btn-block" type="submit">Request demo</button>
+          </form>
+
+          <div class="success" id="demo-success" hidden tabindex="-1">
+            <span class="success-icon"><svg viewBox="0 0 24 24" class="icon"><polyline class="draw" points="20 6 9 17 4 12"/></svg></span>
+            <h3>Thanks, <span data-success-name>friend</span>!</h3>
+            <p>Your demo request is in. We'll email you within one business day to pick a time.</p>
+            <button class="btn btn-glass" type="button" data-reset-form="demo-form">Send another request</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="cta-wrap" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta glass reveal">
+          <h2 id="cta-title">Ready to calm your inbox?</h2>
+          <p>Join 2,500+ teams who reply faster with Lumen. Set up in minutes, free to start.</p>
+          <div class="hero-actions center">
+            <button class="btn btn-primary btn-lg" type="button" data-open-signup>Start free <svg class="icon icon-sm"><use href="#i-arrow"/></svg></button>
+            <a class="btn btn-glass btn-lg" href="#contact">Book a demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#top" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></g></svg>
+          </span>
+          Lumen
+        </a>
+        <p class="footer-tag">The shared inbox for support teams who care about every customer.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Company">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact">Book a demo</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>© <span id="year">2026</span> Lumen. A demo project made for a front-end internship assignment.</p>
+    </div>
+  </footer>
+
+  <!-- ============ SIGN-UP MODAL ============ -->
+  <dialog class="modal" id="signup-modal" aria-labelledby="signup-title">
+    <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><svg class="icon"><use href="#i-close"/></svg></button>
+
+    <form id="signup-form" novalidate>
+      <h3 id="signup-title">Create your free account</h3>
+      <p class="modal-sub">Get your team's inbox set up in minutes.</p>
+
+      <div class="field">
+        <label for="su-name">Full name</label>
+        <input id="su-name" name="name" type="text" autocomplete="name" placeholder="Jane Doe" data-rules="required|min:2" aria-describedby="su-name-err" />
+        <p class="error" id="su-name-err" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="su-email">Work email</label>
+        <input id="su-email" name="email" type="email" autocomplete="email" placeholder="jane@company.com" data-rules="required|email" aria-describedby="su-email-err" />
+        <p class="error" id="su-email-err" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="su-plan">Plan</label>
+        <select id="su-plan" name="plan" data-rules="required" aria-describedby="su-plan-err">
+          <option value="">Select a plan…</option>
+          <option>Starter</option>
+          <option>Team</option>
+        </select>
+        <p class="error" id="su-plan-err" role="alert"></p>
+      </div>
+
+      <div class="field field-check">
+        <label class="check">
+          <input id="su-terms" name="terms" type="checkbox" data-rules="required" aria-describedby="su-terms-err" />
+          <span>I agree to the terms of service and privacy policy.</span>
+        </label>
+        <p class="error" id="su-terms-err" role="alert"></p>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit">Create account</button>
+    </form>
+
+    <div class="success" id="signup-success" hidden tabindex="-1">
+      <span class="success-icon"><svg viewBox="0 0 24 24" class="icon"><polyline class="draw" points="20 6 9 17 4 12"/></svg></span>
+      <h3>Welcome to Lumen, <span data-success-name>friend</span>!</h3>
+      <p>Your <strong data-success-plan>Starter</strong> account is ready. (This is a demo, so no real account was created.)</p>
+      <button class="btn btn-primary" type="button" data-close-modal>Done</button>
+    </div>
+  </dialog>
+
+</body>
+</html>
